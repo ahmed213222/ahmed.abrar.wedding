@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>باقي على فرحنا</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Cairo & Amiri for a beautiful Arabic style -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Cairo:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles */
+        body {
+            font-family: 'Cairo', sans-serif;
+            overflow: hidden; /* Hide scrollbars caused by petals */
+        }
+        .font-amiri {
+            font-family: 'Amiri', serif;
+        }
+        /* Style for the content to have a semi-transparent background */
+        .content-overlay {
+            background-color: rgba(255, 255, 255, 0.88); /* White with 88% opacity */
+            backdrop-filter: blur(10px); /* Increased blur effect */
+        }
+        /* Animation for the content to fade in */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 1.5s ease-out forwards;
+        }
+
+        /* Falling Petals Animation */
+        .petal {
+            position: absolute;
+            background: #f472b6; /* Pink color for petals */
+            border-radius: 50% 0;
+            opacity: 0.7;
+            animation: fall linear infinite;
+            pointer-events: none; /* Make petals non-interactive */
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-10vh) rotate(0deg);
+            }
+            100% {
+                transform: translateY(110vh) rotate(720deg);
+            }
+        }
+        
+        /* Heartbeat animation */
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+        .heartbeat {
+            display: inline-block;
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Petal container -->
+    <div id="petal-container" class="absolute inset-0 z-0"></div>
+
+    <!-- Background Image Container -->
+    <div class="absolute inset-0 z-10">
+        <img src="C:\Users\ahmed.shamy\Desktop\WhatsApp Image 2025-07-21 at 15.22.56_9a1ca2af.jpg"
+             alt="خلفية ورد" 
+             class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-pink-100 opacity-30"></div> <!-- Soft pink overlay -->
+    </div>
+
+    <!-- Main Content -->
+    <div class="relative min-h-screen flex flex-col items-center justify-center p-4 z-20">
+        <div class="content-overlay p-8 md:p-12 rounded-2xl shadow-2xl text-center max-w-4xl mx-auto fade-in">
+            <!-- Main Heading -->
+            <h1 class="text-5xl md:text-7xl font-bold text-pink-800 font-amiri flex items-center justify-center">
+                احمد
+                <span class="text-red-500 mx-4 heartbeat">❤️</span>
+                ابرار
+            </h1>
+            
+            <!-- Subheading -->
+            <p class="mt-4 text-2xl md:text-3xl text-gray-700">
+                باقي على فرحنا
+            </p>
+
+            <!-- Countdown Timer -->
+            <div id="countdown" class="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-4 md:gap-6 text-gray-800">
+                <div class="bg-white/60 p-4 rounded-lg shadow-lg">
+                    <div id="days" class="text-4xl md:text-6xl font-bold">00</div>
+                    <div class="text-sm md:text-lg">أيام</div>
+                </div>
+                <div class="bg-white/60 p-4 rounded-lg shadow-lg">
+                    <div id="hours" class="text-4xl md:text-6xl font-bold">00</div>
+                    <div class="text-sm md:text-lg">ساعات</div>
+                </div>
+                <div class="bg-white/60 p-4 rounded-lg shadow-lg">
+                    <div id="minutes" class="text-4xl md:text-6xl font-bold">00</div>
+                    <div class="text-sm md:text-lg">دقائق</div>
+                </div>
+                <div class="bg-white/60 p-4 rounded-lg shadow-lg">
+                    <div id="seconds" class="text-4xl md:text-6xl font-bold">00</div>
+                    <div class="text-sm md:text-lg">ثواني</div>
+                </div>
+            </div>
+
+            <!-- Expiration Message (hidden by default) -->
+            <div id="celebration" class="hidden mt-8 text-5xl font-bold text-pink-600 font-amiri">
+                🎉 ألف مبروك! 🎉
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Countdown Timer Logic ---
+        const countDownDate = new Date("Oct 16, 2025 00:00:00").getTime();
+        const daysEl = document.getElementById('days');
+        const hoursEl = document.getElementById('hours');
+        const minutesEl = document.getElementById('minutes');
+        const secondsEl = document.getElementById('seconds');
+        const countdownEl = document.getElementById('countdown');
+        const celebrationEl = document.getElementById('celebration');
+
+        const x = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = countDownDate - now;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            const formatTime = (time) => time < 10 ? `0${time}` : time;
+
+            daysEl.innerHTML = formatTime(days);
+            hoursEl.innerHTML = formatTime(hours);
+            minutesEl.innerHTML = formatTime(minutes);
+            secondsEl.innerHTML = formatTime(seconds);
+
+            if (distance < 0) {
+                clearInterval(x);
+                countdownEl.classList.add('hidden');
+                celebrationEl.classList.remove('hidden');
+            }
+        }, 1000);
+
+        // --- Falling Petals Logic ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const petalContainer = document.getElementById('petal-container');
+            const numberOfPetals = 30; // Adjust for more/fewer petals
+
+            for (let i = 0; i < numberOfPetals; i++) {
+                const petal = document.createElement('div');
+                petal.className = 'petal';
+                
+                const size = Math.random() * 15 + 10; // Size between 10px and 25px
+                const left = Math.random() * 100; // Start position
+                const animDuration = Math.random() * 8 + 7; // Duration between 7s and 15s
+                const animDelay = Math.random() * 5; // Delay up to 5s
+
+                petal.style.width = `${size}px`;
+                petal.style.height = `${size}px`;
+                petal.style.left = `${left}vw`;
+                petal.style.animationDuration = `${animDuration}s`;
+                petal.style.animationDelay = `${animDelay}s`;
+                // Alternate petal colors for variety
+                petal.style.background = i % 2 === 0 ? '#f472b6' : '#fce7f3'; // Pink and light pink
+                petal.style.opacity = Math.random() * 0.5 + 0.3; // Opacity between 0.3 and 0.8
+
+
+                petalContainer.appendChild(petal);
+            }
+        });
+    </script>
+</body>
+</html>
