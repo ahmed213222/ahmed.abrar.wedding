@@ -10,8 +10,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Cairo:wght@300;400;700&display=swap" rel="stylesheet">
-    <!-- Tone.js for audio -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
     <style>
         /* Custom styles */
         body {
@@ -117,10 +115,16 @@
     </style>
 </head>
 <body class="bg-gray-100">
+    <!-- Background Audio -->
+    <audio id="background-music" loop>
+        <source src="a.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
     <!-- Music Button -->
     <button id="music-btn">
-        <svg id="music-on-icon" class="w-6 h-6 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.88 5.88a15 15 0 0121.213 0M9 9l6-6m0 6l-6-6"></path></svg>
-        <svg id="music-off-icon" class="w-6 h-6 text-gray-500 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clip-rule="evenodd"></path><path d="M17 14l4-4m0 4l-4-4"></path></svg>
+        <svg id="music-on-icon" class="w-6 h-6 text-pink-600 hidden" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clip-rule="evenodd"></path></svg>
+        <svg id="music-off-icon" class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clip-rule="evenodd"></path><path d="M17 14l4-4m0 4l-4-4"></path></svg>
     </button>
     
     <!-- Petal container -->
@@ -238,33 +242,25 @@
             });
 
             // --- Background Music Logic ---
-            let musicPlaying = false;
             const musicBtn = document.getElementById('music-btn');
             const musicOnIcon = document.getElementById('music-on-icon');
             const musicOffIcon = document.getElementById('music-off-icon');
-
-            const synth = new Tone.Synth({
-                oscillator: { type: 'sine' },
-                envelope: { attack: 0.1, decay: 0.2, sustain: 0.5, release: 1 }
-            }).toDestination();
-            
-            const melody = new Tone.Sequence((time, note) => {
-                synth.triggerAttackRelease(note, '8n', time);
-            }, ['C4', 'E4', 'G4', 'C5', 'G4', 'E4'], '4n');
-            
-            melody.loop = true;
+            const backgroundMusic = document.getElementById('background-music');
             
             musicBtn.addEventListener('click', async () => {
-                await Tone.start();
-                if (musicPlaying) {
-                    Tone.Transport.stop();
-                    musicPlaying = false;
-                    musicOnIcon.classList.remove('hidden');
-                    musicOffIcon.classList.add('hidden');
-                } else {
-                    Tone.Transport.start();
-                    melody.start(0);
-                    musicPlaying = true;
+                try {
+                    if (backgroundMusic.paused) {
+                        await backgroundMusic.play();
+                        musicOnIcon.classList.remove('hidden');
+                        musicOffIcon.classList.add('hidden');
+                    } else {
+                        backgroundMusic.pause();
+                        musicOnIcon.classList.add('hidden');
+                        musicOffIcon.classList.remove('hidden');
+                    }
+                } catch (error) {
+                    console.error("Audio playback error:", error);
+                    // Reset icons to off state on error to prevent inconsistent UI
                     musicOnIcon.classList.add('hidden');
                     musicOffIcon.classList.remove('hidden');
                 }
